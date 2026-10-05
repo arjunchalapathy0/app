@@ -19,6 +19,8 @@ interface LeadFormProps {
 }
 
 const EMPTY_CONTACT: ContactInput = { businessName: "", phone: "", email: "" };
+// Matches the on-screen order, so focus lands on the first visible error.
+const FIELD_ORDER: ContactField[] = ["businessName", "email", "phone"];
 
 function messageForStatus(status: number): string {
   if (status === 503) {
@@ -54,7 +56,7 @@ export function LeadForm({ calculatorValues }: LeadFormProps) {
     if (!result.success) {
       const errors = fieldErrorsFrom(result.error);
       setFieldErrors(errors);
-      const firstInvalid = (Object.keys(errors) as ContactField[])[0];
+      const firstInvalid = FIELD_ORDER.find((field) => errors[field]);
       if (firstInvalid) document.getElementById(`lead-${firstInvalid}`)?.focus();
       return;
     }
